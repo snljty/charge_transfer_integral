@@ -11,7 +11,6 @@ SHELL = cmd
 FC = gfortran
 FLINKER = $(FC)
 LIBPATH = -L .
-LIB = -l blas -l lapack
 
 .PHONY: all clean_tmp clean
 
@@ -19,7 +18,7 @@ all: calc_coupling.exe
 
 calc_coupling.exe: calc_coupling.o
 	@echo Linking $@ against $^ ...
-	$(FLINKER) -o $@ $^ $(LIBPATH) $(LIB)
+	$(FLINKER) -o $@ $^ $(LIBPATH) -l lapack $(LIBPATH) -l blas
 
 calc_coupling.o: calc_coupling.f90
 	@echo Compiling $@ ...
