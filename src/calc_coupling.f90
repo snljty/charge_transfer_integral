@@ -1,4 +1,4 @@
-! calculates charge transfer integral from Gaussian fch files
+! calculates charge transfer integral from files contain wavefunction information
 
 program main
     implicit none
@@ -69,6 +69,7 @@ program main
     character(kind=1,len=256) :: fl_MO_dimer
     character(kind=1,len=256) :: fl_MO_monomer1
     character(kind=1,len=256) :: fl_MO_monomer2
+    character(kind=1,len=256) :: fl_CT_out
     logical(kind=1) :: fl_exist
     integer(kind=4), parameter :: ifl_unit = 10
     integer(kind=4), parameter :: ofl_unit = 11
@@ -145,6 +146,7 @@ program main
     fl_MO_dimer = ""
     fl_MO_monomer1 = ""
     fl_MO_monomer2 = ""
+    fl_CT_out = ""
     iarg = 1
     do while (iarg <= argc)
         if ((trim(argv(iarg)) == "-h") .or. (trim(argv(iarg)) == "--help")) then
@@ -155,13 +157,16 @@ program main
             end if
             write(*, "(a)") "Usage: "
             write(*, "(7x,a,1x,a)")  trim(argv0), "[-h, --help]"
-            write(*, "(7x,a,3(1x,a))") trim(argv0), "[-d, --dimer DIMER]", &
-                                              "[-m1, --monomer1 MONOMER1]", "[-m2, --monomer2 MONOMER2]"
+            write(*, "(7x,a,4(1x,a))") trim(argv0), "[-d, --dimer DIMER]", &
+                                              "[-m1, --monomer1 MONOMER1]", "[-m2, --monomer2 MONOMER2]" , &
+                                              "[-f, --full OUTFILE]"
             write(*, "()")
             write(*, "(a)") "--help    : print this help message and stop."
             write(*, "(a)") "--dimer   : file contains necessary inofmation of the dimer."
             write(*, "(a)") "--monomer1: file contains necessary inofmation of the 1st monomer."
             write(*, "(a)") "--monomer2: file contains necessary inofmation of the 2nd monomer."
+            write(*, "(a)") "--full    : output all orbital transfer integrals to a file "
+            write(*, "(a)") "            instead of HOMO and LUMO only"
             write(*, "()")
             write(*, "(a)") "Exiting normally."
             stop
@@ -192,6 +197,9 @@ program main
                 write(*, "(a)") "Please input it in the interactive mode later."
                 fl_MO_monomer2 = ""
             end if
+        else if ((trim(argv(iarg)) == "-f") .or. (trim(argv(iarg)) == "--full")) then
+            iarg = iarg + 1
+            fl_CT_out = trim(argv(iarg))
         else
             write(*, "(a,1x,a)") "Error! Unknown argument:", argv(iarg)
             stop "Unknown argument"
@@ -269,9 +277,10 @@ program main
     end if
 
     ! show names of files containing MO information
-    write(*, "(a,a,a)") "# Using """, trim(fl_MO_dimer), """ of dimer."
-    write(*, "(a,a,a)") "# Using """, trim(fl_MO_monomer1), """ of monomer1."
-    write(*, "(a,a,a)") "# Using """, trim(fl_MO_monomer2), """ of monomer2."
+    write(*, "(a,a,a)") "# Using """, trim(fl_MO_dimer), """ for dimer."
+    write(*, "(a,a,a)") "# Using """, trim(fl_MO_monomer1), """ for monomer1."
+    write(*, "(a,a,a)") "# Using """, trim(fl_MO_monomer2), """ for monomer2."
+    if (trim(fl_CT_out) /= "") write(*, "(a,a,a)") "# Using """, trim(fl_CT_out), """ for output."
 
     ! first, get amount of electrons and orbitals, to see if the sum of monomers equals dimer
 
@@ -522,19 +531,37 @@ program main
     index_lumo1 = index_homo1 + 1
     index_homo2 = num_ele_monomer2 / 2
     index_lumo2 = index_homo2 + 1
-    write(*, "(a,i4,a,i4)") "# Monomer 1    HOMO: ", index_homo1, "        LUMO: ", index_lumo1
-    write(*, "(a,i4,a,i4)") "# Monomer 2    HOMO: ", index_homo2, "        LUMO: ", index_lumo2
-    write(*, "(a)") "# Transfer Integrals between HOMO and LUMO of monomers:"
-    write(*, "(a)") "# monomer_1    monomer_2    J_eff_12/meV      e_eff_1/eV      e_eff_2/eV   "
-    do i = index_homo1, index_lumo1
-    ! do i = 1, num_orb_monomer1
-        do j = index_homo2, index_lumo2
-        ! do j = 1, num_orb_monomer2
-            call calc_coupling(i, j, num_orb_dimer, num_orb_monomer1, F, S, C_sep, J_eff12, e_eff1, e_eff2)
-            write(*, "(3x,i4,9x,i4,7x,f13.7,4x,f12.7,4x,f12.7)") i, j, &
-                J_eff12 * Hartree_to_eV * 1.0D3, e_eff1 * Hartree_to_eV, e_eff2 * Hartree_to_eV
+    if (trim(fl_CT_out) == "") then
+        write(*, "(a,i4,a,i4)") "# Monomer 1    HOMO: ", index_homo1, "        LUMO: ", index_lumo1
+        write(*, "(a,i4,a,i4)") "# Monomer 2    HOMO: ", index_homo2, "        LUMO: ", index_lumo2
+        write(*, "(a)") "# Transfer Integrals between HOMO and LUMO of monomers:"
+        write(*, "(a)") "# monomer_1    monomer_2    J_eff_12/meV      e_eff_1/eV      e_eff_2/eV   "
+        do i = index_homo1, index_lumo1
+            do j = index_homo2, index_lumo2
+                call calc_coupling(i, j, num_orb_dimer, num_orb_monomer1, F, S, C_sep, &
+                    J_eff12, e_eff1, e_eff2)
+                write(*, "(3x,i4,9x,i4,7x,f13.7,4x,f12.7,4x,f12.7)") i, j, &
+                    J_eff12 * Hartree_to_eV * 1.0D3, e_eff1 * Hartree_to_eV, e_eff2 * Hartree_to_eV
+            end do
         end do
-    end do
+    else
+        open(ofl_unit, file = fl_CT_out, action = "write", status = "replace")
+        write(ofl_unit, "(a,i4,a,i4)") "# Monomer 1    HOMO: ", index_homo1, "        LUMO: ", index_lumo1
+        write(ofl_unit, "(a,i4,a,i4)") "# Monomer 2    HOMO: ", index_homo2, "        LUMO: ", index_lumo2
+        write(ofl_unit, "(a)") "# Transfer Integrals between HOMO and LUMO of monomers:"
+        write(ofl_unit, "(a)") "# monomer_1    monomer_2    J_eff_12/meV      e_eff_1/eV      e_eff_2/eV   "
+        do i = 1, num_orb_monomer1
+            do j = 1, num_orb_monomer2
+                call calc_coupling(i, j, num_orb_dimer, num_orb_monomer1, F, S, C_sep, &
+                    J_eff12, e_eff1, e_eff2)
+                write(ofl_unit, "(3x,i4,9x,i4,7x,f13.7,4x,f12.7,4x,f12.7)") i, j, &
+                    J_eff12 * Hartree_to_eV * 1.0D3, e_eff1 * Hartree_to_eV, e_eff2 * Hartree_to_eV
+            end do
+        end do
+        close(ofl_unit)
+        write(*, "(a,a,a)") "# Intermolecule charge transfer integrals have been saved to """, &
+            trim(fl_CT_out), """."
+    end if
 
     ! release memory of numeric arraies
     deallocate(tmp_arr)
