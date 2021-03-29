@@ -1,4 +1,4 @@
-![nico](nico.jpg)
+![neko](neko.jpg)
 
 # calc_coupling
 
