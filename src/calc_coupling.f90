@@ -295,7 +295,7 @@ program main
         " > " // trim(fl_Multiwfn_out), wait = .true., exitstat = sys_status)
     if (sys_status /= 0) then
         write(*, "(a)") "Error calling Multiwfn of monomer1!"
-        write(*, "(a)") "Please check Multiwfn relative settings and """, trim(fl_MO_monomer1), """."
+        write(*, "(a,a,a)") "Please check Multiwfn relative settings and """, trim(fl_MO_monomer1), """."
         stop "Error calling Multiwfn"
     end if
 
@@ -325,7 +325,7 @@ program main
         " > " // trim(fl_Multiwfn_out), wait = .true., exitstat = sys_status)
     if (sys_status /= 0) then
         write(*, "(a)") "Error calling Multiwfn of monomer2!"
-        write(*, "(a)") "Please check Multiwfn relative settings and """, trim(fl_MO_monomer2), """."
+        write(*, "(a,a,a)") "Please check Multiwfn relative settings and """, trim(fl_MO_monomer2), """."
         stop "Error calling Multiwfn"
     end if
 
@@ -355,7 +355,7 @@ program main
         " > " // trim(fl_Multiwfn_out), wait = .true., exitstat = sys_status)
     if (sys_status /= 0) then
         write(*, "(a)") "Error calling Multiwfn of dimer!"
-        write(*, "(a)") "Please check Multiwfn relative settings and """, trim(fl_MO_dimer), """."
+        write(*, "(a,a,a)") "Please check Multiwfn relative settings and """, trim(fl_MO_dimer), """."
         stop "Error calling Multiwfn"
     end if
 
@@ -425,7 +425,7 @@ program main
         " > " // trim(fl_Multiwfn_out), wait = .true., exitstat = sys_status)
     if (sys_status /= 0) then
         write(*, "(a)") "Error calling Multiwfn of monomer1!"
-        write(*, "(a)") "Please check Multiwfn relative settings and """, trim(fl_MO_monomer1), """."
+        write(*, "(a,a,a)") "Please check Multiwfn relative settings and """, trim(fl_MO_monomer1), """."
         stop "Error calling Multiwfn"
     end if
 
@@ -445,7 +445,7 @@ program main
         " > " // trim(fl_Multiwfn_out), wait = .true., exitstat = sys_status)
     if (sys_status /= 0) then
         write(*, "(a)") "Error calling Multiwfn of monomer2!"
-        write(*, "(a)") "Please check Multiwfn relative settings and """, trim(fl_MO_monomer2), """."
+        write(*, "(a,a,a)") "Please check Multiwfn relative settings and """, trim(fl_MO_monomer2), """."
         stop "Error calling Multiwfn"
     end if
 
@@ -476,7 +476,7 @@ program main
         " > " // trim(fl_Multiwfn_out), wait = .true., exitstat = sys_status)
     if (sys_status /= 0) then
         write(*, "(a)") "Error calling Multiwfn of dimer!"
-        write(*, "(a)") "Please check Multiwfn relative settings and """, trim(fl_MO_dimer), """."
+        write(*, "(a,a,a)") "Please check Multiwfn relative settings and """, trim(fl_MO_dimer), """."
         stop "Error calling Multiwfn"
     end if
 
