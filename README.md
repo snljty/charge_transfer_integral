@@ -20,7 +20,7 @@ For the computation details of the algorithm to obtain the coupling, just read t
 
 ## Application
 
-All files that both contains the information needed (the information of the basis functions, the coefficients of basis functions in molecule orbitals, and energies of molecule orbitals) and supported by **Multiwfn** should be supported by this program.  For example, fch/fchk files of Gaussian (note that traditional semi-empirical methods such as PM7 are NOT supported!) and molden files of ORCA or xTB.
+All files that both contains the information needed (the information of the basis functions, the coefficients of basis functions in molecule orbitals, and energies of molecule orbitals) and supported by **Multiwfn** should be supported by this program.  For example, fch/fchk files of Gaussian (note that traditional semi-empirical methods such as PM7 are NOT supported!) and molden files of ORCA.
 
 Phase-matching method of orbitals is currently NOT implied currently, hence ONLY the absolute value of the transfer integral calculated by this program is currently meaningful.
 
