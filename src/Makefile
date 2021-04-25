@@ -7,10 +7,11 @@
 # This program is not parallized, partly due to lapack and blas are not multithread libraries, 
 # and the author of this program is not familiar with OpenBLAS or MKL, as well as parallel programming.
 
-SHELL = cmd
-FC = gfortran
-FLINKER = $(FC)
-LIBPATH = -L .
+SHELL := cmd
+FC := gfortran
+FLINKER := $(FC)
+LIBPATH := .
+# LIBPATH = -L C:\\PATH\\TO\\YOUR\\LAPACK
 
 .PHONY: all clean_tmp clean
 
@@ -18,9 +19,9 @@ all: calc_coupling.exe
 
 calc_coupling.exe: calc_coupling.o
 	@echo Linking $@ against $^ ...
-	$(FLINKER) -o $@ $^ $(LIBPATH) -l lapack $(LIBPATH) -l blas
+	$(FLINKER) -o $@ $^ $(LIBPATH) -l lapack -l blas -static
 
-calc_coupling.o: calc_coupling.f90
+calc_coupling.o: calc_coupling.f95
 	@echo Compiling $@ ...
 	$(FC) -o $@ -c $<
 

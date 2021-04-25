@@ -4,10 +4,11 @@ program main
     implicit none
 
     interface
-        subroutine inverse_matrix_inplace(a, n, ipiv, tmp, nb)
+        subroutine inverse_matrix_inplace(a, n, lda, ipiv, tmp, nb)
             implicit none
             integer(kind=4), intent(in) :: n
             real(kind=8), intent(inout) :: a(n ** 2)
+            integer(kind=4), intent(in) :: lda
             integer(kind=4), intent(inout) :: ipiv(n)
             integer(kind=4), intent(in) :: nb
             real(kind=8), intent(inout) :: tmp(n * nb)
@@ -60,7 +61,7 @@ program main
     integer(kind=4) :: iarg
     integer(kind=4) :: arg_status
     character(kind=1,len=256) :: argv0
-    character(kind=1,len=32), allocatable :: argv(:)
+    character(kind=1,len=32), pointer :: argv(:)
 
     character(kind=1,len=256) :: buf
     integer(kind=4) :: buf_pos
@@ -90,16 +91,16 @@ program main
     integer(kind=4) :: index_homo2
     integer(kind=4) :: index_lumo2
 
-    real(kind=8), allocatable :: S(:, :)
-    real(kind=8), allocatable :: C(:, :)
-    real(kind=8), allocatable :: C_inv(:, :)
-    real(kind=8), allocatable :: E(:, :)
-    real(kind=8), allocatable :: F(:, :)
-    real(kind=8), allocatable :: C_sep(:, :)
+    real(kind=8), pointer :: S(:, :)
+    real(kind=8), pointer :: C(:, :)
+    real(kind=8), pointer :: C_inv(:, :)
+    real(kind=8), pointer :: E(:, :)
+    real(kind=8), pointer :: F(:, :)
+    real(kind=8), pointer :: C_sep(:, :)
 
     integer(kind=4), external :: ilaenv
-    integer(kind=4), allocatable :: ipiv(:)
-    real(kind=8), allocatable :: tmp_arr(:)
+    integer(kind=4), pointer :: ipiv(:)
+    real(kind=8), pointer :: tmp_arr(:)
     integer(kind=4) :: nb
 
     real(kind=8) :: J_eff12
@@ -210,6 +211,7 @@ program main
 
     ! release memory of command arguments
     if (argc > 0) deallocate(argv)
+    argv => null()
 
     ! get the files' names if not obtained from the command arguments
     write(*, "()")
@@ -512,7 +514,7 @@ program main
     ! calculate C_inv from C
     write(*, "(a)") "# Inversing coefficient matix of dimer ..."
     C_inv = C
-    call inverse_matrix_inplace(C_inv, num_orb_dimer, ipiv, tmp_arr, nb)
+    call inverse_matrix_inplace(C_inv, num_orb_dimer, num_orb_dimer, ipiv, tmp_arr, nb)
 
     ! read S from Multiwfn output file
     write(*, "(a)") "# Reading overlap matrix of dimer ..."
@@ -566,27 +568,37 @@ program main
 
     ! release memory of numeric arraies
     deallocate(tmp_arr)
+    tmp_arr => null()
     deallocate(ipiv)
+    ipiv => null()
     deallocate(S)
+    S => null()
     deallocate(C)
+    C => null()
     deallocate(E)
+    E => null()
     deallocate(F)
+    F => null()
     deallocate(C_sep)
+    C_sep => null()
+    deallocate(C_inv)
+    C_inv => null()
 
     stop
 end program main
 
-subroutine inverse_matrix_inplace(a, n, ipiv, tmp, nb)
+subroutine inverse_matrix_inplace(a, n, lda, ipiv, tmp, nb)
     implicit none
     integer(kind=4), intent(in) :: n
     real(kind=8), intent(inout) :: a(n ** 2)
+    integer(kind=4), intent(in) :: lda
     integer(kind=4), intent(inout) :: ipiv(n)
     integer(kind=4), intent(in) :: nb
     real(kind=8), intent(inout) :: tmp(n * nb)
     integer(kind=4) :: info
 
     ! LU decompostion
-    call dgetrf(n, n, a, n, ipiv, info)
+    call dgetrf(n, n, a, lda, ipiv, info)
     if (info < 0) then
         write(*, "(a,i1,a)") "The argument with index ", - info, &
             " in subroutine dgetrf has illegal value!"
@@ -597,7 +609,7 @@ subroutine inverse_matrix_inplace(a, n, ipiv, tmp, nb)
     end if
 
     ! Inverse matrix
-    call dgetri(n, a, n, ipiv, tmp, n ** 2, info)
+    call dgetri(n, a, lda, ipiv, tmp, n ** 2, info)
     if (info < 0) then
         write(*, "(a,i1,a)") "The argument with index ", - info, &
             " in subroutine dgetri has illegal value!"
