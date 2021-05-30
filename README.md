@@ -20,7 +20,9 @@ For the computation details of the algorithm to obtain the coupling, just read t
 
 ## Application
 
-All files that both contains the information needed (the information of the basis functions, the coefficients of basis functions in molecule orbitals, and energies of molecule orbitals) and supported by **Multiwfn** should be supported by this program.  For example, fch/fchk files of Gaussian (note that traditional semi-empirical methods such as PM7 are NOT supported!) and molden files of ORCA.
+All files that both contains the information needed (the information of the basis functions, the coefficients of basis functions in molecule orbitals, and energies of molecule orbitals) and supported by **Multiwfn** should be supported by this program.  For example, fch/fchk files of **Gaussian** (note that traditional semi-empirical methods such as PM7 are NOT supported!) and molden files of **ORCA**. For **Gaussian** Users, key-work "NoSymmetry" must present in all of your inputs files to avoid the basis functions being rotated or translated.
+
+If linear-dependant basis functions are found in any of these calculations, this program will NOT be available due to two reasons: some quantum software may reduce the linear-dependant basis functions so that the matrix of coefficients is a rectangle instead of a square, or even if you prevent the program from doing that, a square matrix with linear-dependant columns is singular, in both cases the matrix of coefficients is not inversible.
 
 Phase-matching method of orbitals is currently NOT implied currently, hence ONLY the absolute value of the transfer integral calculated by this program is currently meaningful.
 
@@ -28,7 +30,7 @@ Phase-matching method of orbitals is currently NOT implied currently, hence ONLY
 
 The libraries **lapack** and **blas** (http://www.netlib.org/lapack/) is required to calculate C_inv from C. For windows users, you can download from http://icl.cs.utk.edu/lapack-for-windows/lapack/ or use the libraries provided in this folder. For Linux Users, you can get these libraries through yum/apt, or get the source code from http://www.netlib.org/lapack/ and compile yourself.
 
-This executable is compiled by gfortran from TDM-gcc-9.2.0-x64 under Windows with lapack-3.9.0 compiled with the same compilers and cmake cmake-3.15.2-x64 for Windows. If you want to compile yourself, you can change the Makefile to makesure the LIBPATH contains the path to your **lapack** and **blas** libraries, e.g., liblapack.a and libblas.a, the choices of FC and FLINKER are available, and others to fit the requirement of your system, then simply type "make" to generate the executable.
+This executable is compiled by gfortran from TDM-gcc-9.2.0-x64 under Windows with lapack-3.9.0 compiled with the same compilers and cmake-3.15.2-x64 for Windows. If you want to compile yourself, you can change the Makefile to make sure the LIBPATH contains the path to your **lapack** and **blas** libraries, e.g., liblapack.a and libblas.a, the choices of FC (The Fortran compiler that supports at least Fortran 95 standard) and FLINKER (The Fortran Linker) are available, and others to fit the requirement of your system, then simply type "make" to generate the executable.
 
 The program **Multiwfn** need to be properly installed before. You can obtain it from http://sobereva.com/multiwfn/ . Please set the environmental variable "Multiwfnpath" to the directory containing Multiwfn executable, and add this directory to environmental variable "PATH". Some settings in "settings.ini" for Multiwfn may also be required to  be changed before running this program.
 

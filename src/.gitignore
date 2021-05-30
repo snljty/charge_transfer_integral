@@ -1,2 +1,2 @@
 *.o
-calc_coupling_old_version.f90
+*_old_version.*
