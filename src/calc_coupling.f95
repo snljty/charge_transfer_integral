@@ -118,7 +118,7 @@ program main
     write(*, "(a)") "# Currently only restricted single-determination method is available."
     write(*, "(a)") "# Phase-match method of wavefunctions is not implied yet."
     write(*, "(a)") "# sobereva's Multiwfn (http://sobereva.com/multiwfn/) is required "
-    write(*, "(a)") "# to be set properly beofe running this program."
+    write(*, "(a)") "# to be set properly before running this program."
     write(*, "(a)") "# Libraries lapack and blas are required to be linked to this program, "
     write(*, "(a)") "# and to be used during runtime if they are shared libraries."
     write(*, "(a)") "# If you are using Gaussian fch/fchk files, "
@@ -645,7 +645,7 @@ end function get_num_items_in_line
 ! Read a ofmated matrix
 ! This subroutine changes the current position of the file.
 ! The matrix is allocated before, and
-! mat_size should be provided beofe here. There is way to overcome this, 
+! mat_size should be provided before here. There is way to overcome this, 
 ! but not provided in this code.
 subroutine read_matrix(fl_unit, mat, mat_size)
     implicit none
@@ -681,7 +681,7 @@ end subroutine read_matrix
 ! Read a lower-triangle ofmat matrix
 ! This subroutine changes the current position of the file.
 ! The matrix is allocated before, and
-! mat_size should be provided beofe here. There is way to overcome this, 
+! mat_size should be provided before here. There is way to overcome this, 
 ! but not provided in this code.
 subroutine read_lt_matrix(fl_unit, mat, mat_size)
     implicit none
