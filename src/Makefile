@@ -10,8 +10,8 @@
 SHELL := cmd
 FC := gfortran
 FLINKER := $(FC)
-LIBPATH := .
-# LIBPATH = -L C:\\PATH\\TO\\YOUR\\LAPACK
+LIBPATH := -L .
+# LIBPATH := -L C:\\PATH\\TO\\YOUR\\LAPACK
 
 .PHONY: all clean_tmp clean
 

@@ -644,7 +644,7 @@ end function get_num_items_in_line
 
 ! Read a ofmated matrix
 ! This subroutine changes the current position of the file.
-! The matrix is allocated beofe, and
+! The matrix is allocated before, and
 ! mat_size should be provided beofe here. There is way to overcome this, 
 ! but not provided in this code.
 subroutine read_matrix(fl_unit, mat, mat_size)
@@ -680,7 +680,7 @@ end subroutine read_matrix
 
 ! Read a lower-triangle ofmat matrix
 ! This subroutine changes the current position of the file.
-! The matrix is allocated beofe, and
+! The matrix is allocated before, and
 ! mat_size should be provided beofe here. There is way to overcome this, 
 ! but not provided in this code.
 subroutine read_lt_matrix(fl_unit, mat, mat_size)
