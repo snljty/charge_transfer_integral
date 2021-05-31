@@ -61,7 +61,7 @@ program main
     integer(kind=4) :: iarg
     integer(kind=4) :: arg_status
     character(kind=1,len=256) :: argv0
-    character(kind=1,len=32), pointer :: argv(:)
+    character(kind=1,len=128), pointer :: argv(:)
 
     character(kind=1,len=256) :: buf
     integer(kind=4) :: buf_pos
@@ -71,6 +71,7 @@ program main
     character(kind=1,len=256) :: fl_MO_monomer1
     character(kind=1,len=256) :: fl_MO_monomer2
     character(kind=1,len=256) :: fl_CT_out
+    character(kind=1,len=256) :: fl_Fock_dimer
     logical(kind=1) :: fl_exist
     integer(kind=4), parameter :: ifl_unit = 10
     integer(kind=4), parameter :: ofl_unit = 11
@@ -128,7 +129,7 @@ program main
     write(*, "(a)") "# including but not limitted to fch/fchk files of Gaussian, molden files "
     write(*, "(a)") "# of ORCA, should also be supported by this program."
     ! write(*, "(a)") "# of ORCA or xTB, should also be supported by this program."
-    write(*, "(a)") "# Please note that fch/fchk files froom traditional semi-empirical methods "
+    write(*, "(a)") "# Please note that fch/fchk files from traditional semi-empirical methods "
     write(*, "(a)") "# such as PM7 in Gaussian is not supported by Multiwfn, and hence not "
     write(*, "(a)") "# supported by this program."
     write(*, "(a)") "# For other details, please read ""README.md""."
@@ -148,6 +149,7 @@ program main
     fl_MO_dimer = ""
     fl_MO_monomer1 = ""
     fl_MO_monomer2 = ""
+    fl_Fock_dimer = ""
     fl_CT_out = ""
     iarg = 1
     do while (iarg <= argc)
@@ -159,16 +161,18 @@ program main
             end if
             write(*, "(a)") "Usage: "
             write(*, "(7x,a,1x,a)")  trim(argv0), "[-h, --help]"
-            write(*, "(7x,a,4(1x,a))") trim(argv0), "[-d, --dimer DIMER]", &
+            write(*, "(7x,a,5(1x,a))") trim(argv0), "[-d, --dimer DIMER]", "[-dF --dimerFock DIMERFOCK]", &
                                               "[-m1, --monomer1 MONOMER1]", "[-m2, --monomer2 MONOMER2]" , &
                                               "[-f, --full OUTFILE]"
             write(*, "()")
-            write(*, "(a)") "--help    : print this help message and stop."
-            write(*, "(a)") "--dimer   : file contains necessary inofmation of the dimer."
-            write(*, "(a)") "--monomer1: file contains necessary inofmation of the 1st monomer."
-            write(*, "(a)") "--monomer2: file contains necessary inofmation of the 2nd monomer."
-            write(*, "(a)") "--full    : output all orbital transfer integrals to a file "
-            write(*, "(a)") "            instead of HOMO and LUMO only"
+            write(*, "(a)") "--help     : print this help message and stop."
+            write(*, "(a)") "--dimer    : file contains necessary infomation of the dimer."
+            write(*, "(a)") "--monomer1 : file contains necessary infomation of the 1st monomer."
+            write(*, "(a)") "--monomer2 : file contains necessary infomation of the 2nd monomer."
+            write(*, "(a)") "--dimerFock: file contains the Fock Matrix of the dimer, lower-triangle format, "
+            write(*, "(a)") "             with the first line as comment. This is optional."
+            write(*, "(a)") "--full     : output all orbital transfer integrals, instead of HOMO and LUMO only, "
+            write(*, "(a)") "             to a file. This is optional."
             write(*, "()")
             write(*, "(a)") "Exiting normally."
             stop
@@ -198,6 +202,15 @@ program main
                 write(*, "(a,a,a)") "# File """, trim(fl_MO_monomer2), """ not found!"
                 write(*, "(a)") "Please input it in the interactive mode later."
                 fl_MO_monomer2 = ""
+            end if
+        else if ((trim(argv(iarg)) == "-dF") .or. (trim(argv(iarg)) == "--dimerFock")) then
+            iarg = iarg + 1
+            fl_Fock_dimer = trim(argv(iarg))
+            inquire(file = trim(fl_Fock_dimer), exist = fl_exist)
+            if (.not. fl_exist) then
+                write(*, "(a,a,a)") "# File """, trim(fl_Fock_dimer), """ not found!"
+                write(*, "(a)") "# Please check your file."
+                stop "Fock matrix file for dimer not found"
             end if
         else if ((trim(argv(iarg)) == "-f") .or. (trim(argv(iarg)) == "--full")) then
             iarg = iarg + 1
@@ -283,6 +296,7 @@ program main
     write(*, "(a,a,a)") "# Using """, trim(fl_MO_dimer), """ for dimer."
     write(*, "(a,a,a)") "# Using """, trim(fl_MO_monomer1), """ for monomer1."
     write(*, "(a,a,a)") "# Using """, trim(fl_MO_monomer2), """ for monomer2."
+    if (trim(fl_Fock_dimer) /= "") write(*, "(a,a,a)") "# Using """, trim(fl_Fock_dimer), """ for Fock matrix for dimer."
     if (trim(fl_CT_out) /= "") write(*, "(a,a,a)") "# Using """, trim(fl_CT_out), """ for output."
 
     ! first, get amount of electrons and orbitals, to see if the sum of monomers equals dimer
@@ -512,9 +526,11 @@ program main
     close(ifl_unit, status = "delete")
 
     ! calculate C_inv from C
-    write(*, "(a)") "# Inversing coefficient matix of dimer ..."
-    C_inv = C
-    call inverse_matrix_inplace(C_inv, num_orb_dimer, num_orb_dimer, ipiv, tmp_arr, nb)
+    if (trim(fl_Fock_dimer) == "") then
+        write(*, "(a)") "# Inversing coefficient matix of dimer ..."
+        C_inv = C
+        call inverse_matrix_inplace(C_inv, num_orb_dimer, num_orb_dimer, ipiv, tmp_arr, nb)
+    end if
 
     ! read S from Multiwfn output file
     write(*, "(a)") "# Reading overlap matrix of dimer ..."
@@ -525,8 +541,16 @@ program main
     close(ifl_unit, status = "delete")
 
     ! calculates F
-    write(*, "(a)") "# Calculating Fock matrix ..."
-    F = matmul(matmul(matmul(S, C), E), C_inv)
+    if (trim(fl_Fock_dimer) == "") then
+        write(*, "(a)") "# Calculating Fock matrix ..."
+        F = matmul(matmul(matmul(S, C), E), C_inv)
+    else
+        write(*, "(a)") "# Reading Fock matrix for dimer ..."
+        open(ifl_unit, file = trim(fl_Fock_dimer), action = "read", status = "old")
+        read(ifl_unit, "(a)") buf
+        call read_lt_matrix(ifl_unit, F, num_orb_dimer)
+        close(ifl_unit)
+    end if
 
     ! calculates charge transfer integral
     write(*, "(a)") "# Calculating transfer integrals ..."
