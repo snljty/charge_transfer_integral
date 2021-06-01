@@ -113,7 +113,7 @@ program main
 
     integer(kind=4) :: sys_status
 
-    ! show basic inofmation
+    ! show basic infomation
     write(*, "(a)") "# This program calculates intermolecule transfer integrals, "
     write(*, "(a)") "# especially between HOMOs and LUMOs."
     write(*, "(a)") "# Currently only restricted single-determination method is available."
@@ -130,7 +130,7 @@ program main
     write(*, "(a)") "# of ORCA, should also be supported by this program."
     ! write(*, "(a)") "# of ORCA or xTB, should also be supported by this program."
     write(*, "(a)") "# Please note that fch/fchk files from traditional semi-empirical methods "
-    write(*, "(a)") "# such as PM7 in Gaussian is not supported by Multiwfn, and hence not "
+    write(*, "(a)") "# such as PM7 in Gaussian is not supported by Multiwfn, and hence is not "
     write(*, "(a)") "# supported by this program."
     write(*, "(a)") "# For other details, please read ""README.md""."
     write(*, "()")
@@ -169,10 +169,10 @@ program main
             write(*, "(a)") "--dimer    : file contains necessary infomation of the dimer."
             write(*, "(a)") "--monomer1 : file contains necessary infomation of the 1st monomer."
             write(*, "(a)") "--monomer2 : file contains necessary infomation of the 2nd monomer."
-            write(*, "(a)") "--dimerFock: file contains the Fock Matrix of the dimer, lower-triangle format, "
+            write(*, "(a)") "--dimerFock: file contains the Fock Matrix of the dimer, lower-triangle format, "          
             write(*, "(a)") "             with the first line as comment. This is optional."
-            write(*, "(a)") "--full     : output all orbital transfer integrals, instead of HOMO and LUMO only, "
-            write(*, "(a)") "             to a file. This is optional."
+            write(*, "(a)") "--full     : output all orbital transfer integrals, "
+            write(*, "(a)") "             instead of HOMO and LUMO only, to a file. This is optional."
             write(*, "()")
             write(*, "(a)") "Exiting normally."
             stop
@@ -210,7 +210,7 @@ program main
             if (.not. fl_exist) then
                 write(*, "(a,a,a)") "# File """, trim(fl_Fock_dimer), """ not found!"
                 write(*, "(a)") "# Please check your file."
-                stop "Fock matrix file for dimer not found"
+                stop "Fock matrix file of dimer not found"
             end if
         else if ((trim(argv(iarg)) == "-f") .or. (trim(argv(iarg)) == "--full")) then
             iarg = iarg + 1
@@ -229,7 +229,7 @@ program main
     ! get the files' names if not obtained from the command arguments
     write(*, "()")
     if (trim(fl_MO_dimer) == "") then
-        write(*, "(a)") "# Input the name of file contains MO inofmation of the dimer."
+        write(*, "(a)") "# Input the name of file contains MO infomation of the dimer."
         write(*, "(a)") "# If press <Enter> directly, ""dimer.fchk"" will be used."
         do while (.true.)
             read(*, "(a)") fl_MO_dimer
@@ -250,7 +250,7 @@ program main
         end do
     end if
     if (trim(fl_MO_monomer1) == "") then
-        write(*, "(a)") "# Input the name of file contains MO inofmation of the 1st monomer."
+        write(*, "(a)") "# Input the name of file contains MO infomation of the 1st monomer."
         write(*, "(a)") "# If press <Enter> directly, ""monomer1.fchk"" will be used."
         do while (.true.)
             read(*, "(a)") fl_MO_monomer1
@@ -271,7 +271,7 @@ program main
         end do
     end if
     if (trim(fl_MO_monomer2) == "") then
-        write(*, "(a)") "# Input the name of file contains MO inofmation of the 2nd monomer."
+        write(*, "(a)") "# Input the name of file contains MO infomation of the 2nd monomer."
         write(*, "(a)") "# If press <Enter> directly, ""monomer2.fchk"" will be used."
         do while (.true.)
             read(*, "(a)") fl_MO_monomer2
@@ -292,11 +292,12 @@ program main
         end do
     end if
 
-    ! show names of files containing MO information
+    ! show names of files to be used
     write(*, "(a,a,a)") "# Using """, trim(fl_MO_dimer), """ for dimer."
     write(*, "(a,a,a)") "# Using """, trim(fl_MO_monomer1), """ for monomer1."
     write(*, "(a,a,a)") "# Using """, trim(fl_MO_monomer2), """ for monomer2."
-    if (trim(fl_Fock_dimer) /= "") write(*, "(a,a,a)") "# Using """, trim(fl_Fock_dimer), """ for Fock matrix for dimer."
+    if (trim(fl_Fock_dimer) /= "") write(*, "(a,a,a)") &
+        "# Using """, trim(fl_Fock_dimer), """ for Fock matrix of dimer."
     if (trim(fl_CT_out) /= "") write(*, "(a,a,a)") "# Using """, trim(fl_CT_out), """ for output."
 
     ! first, get amount of electrons and orbitals, to see if the sum of monomers equals dimer
@@ -418,16 +419,11 @@ program main
         stop "number of orbitals mismatch"
     end if
 
-    ! allocate memory.
+    ! allocate memory fos S, F and C_sep.
     allocate(S(num_orb_dimer, num_orb_dimer))
-    allocate(C(num_orb_dimer, num_orb_dimer))
-    allocate(C_inv(num_orb_dimer, num_orb_dimer))
-    allocate(E(num_orb_dimer, num_orb_dimer))
     allocate(F(num_orb_dimer, num_orb_dimer))
     allocate(C_sep(num_orb_dimer, num_orb_dimer))
     nb = ilaenv(1, "dgetri", "", num_orb_dimer, -1, -1, -1)
-    allocate(ipiv(num_orb_dimer))
-    allocate(tmp_arr(num_orb_dimer * nb))
 
     ! second, read coefficient matrices of monomers
 
@@ -480,14 +476,20 @@ program main
     open(ifl_unit, file = trim(fl_Multiwfn_in))
     close(ifl_unit, status = "delete")
 
-    ! third, read coefficient matrix, orbital energies and overlap matrix of dimer
+    ! third, read overlap matrix, coefficient matrix and orbital energies of dimer.
 
-    ! prepare input file to obtain coefficient matrix, orbital energies and overlap matrix
+    ! prepare input file to obtain overlap matrix, &
+    ! coefficient matrix (optional) and orbital energy matrix (optional).
     open(ofl_unit, file = trim(fl_Multiwfn_in), action = "write", status = "replace")
-    write(ofl_unit, "(i3)") (/6, 3, 5, 2, 7, 1, 2, -1, -10/) ! Multiwfn commands
+    if (trim(fl_Fock_dimer) == "") then
+        write(ofl_unit, "(i3)") (/6, 3, 5, 2, 7, 1, 2, -1, -10/) ! Multiwfn commands
+    else
+        write(ofl_unit, "(i3)") (/6, 2, 7, 1, 2, -1, -10/) ! Multiwfn commands
+    end if
     close(ofl_unit)
 
-    ! call Multiwfn to obtain coefficient matrix, orbital energies and overlap matrix of dimer
+    ! call Multiwfn to obtain overlap matrix, &
+    ! coefficient matrix (optional) and orbital energies (optional) of dimer.
     write(*, "(a)") "# Calling Multiwfn to obtain amount of orbitals and electrons of dimer ..."
     call execute_command_line("Multiwfn " // trim(fl_MO_dimer) // " < " // trim(fl_Multiwfn_in) // &
         " > " // trim(fl_Multiwfn_out), wait = .true., exitstat = sys_status)
@@ -501,58 +503,77 @@ program main
     open(ifl_unit, file = trim(fl_Multiwfn_in))
     close(ifl_unit, status = "delete")
 
-    ! read orbital energies of dimer
-    E = 0.0D0
-    open(ifl_unit, file = trim(fl_Multiwfn_out), action = "read", status = "old")
-    do while (.true.)
-        read(ifl_unit, "(a)") buf
-        buf_pos = index(buf, "Basic information of all orbitals:")
-        if (buf_pos /= 0) exit
-    end do
-    do i = 1, num_orb_dimer
-        read(ifl_unit, "(a)") buf
-        buf_pos = index(buf, "Ene(au/eV):")
-        buf_pos = buf_pos + len_trim("Ene(au/eV):")
-        read(buf(buf_pos:), *) E(i, i)
-    end do
-    close(ifl_unit, status = "delete")
-
-    ! read coefficient matrix of dimer
-    write(*, "(a)") "# Reading coefficient matrix of dimer ..."
-    open(ifl_unit, file = trim(fl_coefficient), action = "read", status = "old")
-    read(ifl_unit, "(a)") buf
-    read(ifl_unit, "(a)") buf
-    call read_matrix(ifl_unit, C, num_orb_dimer)
-    close(ifl_unit, status = "delete")
-
-    ! calculate C_inv from C
-    if (trim(fl_Fock_dimer) == "") then
-        write(*, "(a)") "# Inversing coefficient matix of dimer ..."
-        C_inv = C
-        call inverse_matrix_inplace(C_inv, num_orb_dimer, num_orb_dimer, ipiv, tmp_arr, nb)
-    end if
-
     ! read S from Multiwfn output file
     write(*, "(a)") "# Reading overlap matrix of dimer ..."
     open(ifl_unit, file = trim(fl_overlap), action = "read", status = "old")
-    ! read S here
     read(ifl_unit, "(a)") buf
     call read_lt_matrix(ifl_unit, S, num_orb_dimer)
     close(ifl_unit, status = "delete")
 
-    ! calculates F
+    ! if not provided Fock matrix of dimer, read coefficient matrix of dimer and get its reverse
+    if (trim(fl_Fock_dimer) == "") then
+        ! allocate memory for tmp_arr, ipiv, C, C_inv and E
+        allocate(C(num_orb_dimer, num_orb_dimer))
+        allocate(C_inv(num_orb_dimer, num_orb_dimer))
+        allocate(E(num_orb_dimer, num_orb_dimer))
+        allocate(ipiv(num_orb_dimer))
+        allocate(tmp_arr(num_orb_dimer * nb))
+        ! read coefficient matrix of dimer
+        write(*, "(a)") "# Reading coefficient matrix of dimer ..."
+        open(ifl_unit, file = trim(fl_coefficient), action = "read", status = "old")
+        read(ifl_unit, "(a)") buf
+        read(ifl_unit, "(a)") buf
+        call read_matrix(ifl_unit, C, num_orb_dimer)
+        close(ifl_unit, status = "delete")
+        ! read orbital energies of dimer
+        E = 0.0D0
+        open(ifl_unit, file = trim(fl_Multiwfn_out), action = "read", status = "old")
+        do while (.true.)
+            read(ifl_unit, "(a)") buf
+            buf_pos = index(buf, "Basic information of all orbitals:")
+            if (buf_pos /= 0) exit
+        end do
+        do i = 1, num_orb_dimer
+            read(ifl_unit, "(a)") buf
+            buf_pos = index(buf, "Ene(au/eV):")
+            buf_pos = buf_pos + len_trim("Ene(au/eV):")
+            read(buf(buf_pos:), *) E(i, i)
+        end do
+        close(ifl_unit, status = "delete")
+        ! calculate C_inv from C
+        write(*, "(a)") "# Inversing coefficient matix of dimer ..."
+        C_inv = C
+        call inverse_matrix_inplace(C_inv, num_orb_dimer, num_orb_dimer, ipiv, tmp_arr, nb)
+    else
+        ! delete Multiwfn output file
+        open(ifl_unit, file = trim(fl_Multiwfn_out), action = "read", status = "old")
+        close(ifl_unit, status = "delete")
+    end if
+
+    ! calculate or read F
     if (trim(fl_Fock_dimer) == "") then
         write(*, "(a)") "# Calculating Fock matrix ..."
         F = matmul(matmul(matmul(S, C), E), C_inv)
+        ! release memory for tmp_arr, ipiv, C, C_inv and E
+        deallocate(tmp_arr)
+        tmp_arr => null()
+        deallocate(ipiv)
+        ipiv => null()
+        deallocate(C)
+        C => null()
+        deallocate(C_inv)
+        C_inv => null()
+        deallocate(E)
+        E => null()
     else
-        write(*, "(a)") "# Reading Fock matrix for dimer ..."
+        write(*, "(a)") "# Reading Fock matrix of dimer ..."
         open(ifl_unit, file = trim(fl_Fock_dimer), action = "read", status = "old")
-        read(ifl_unit, "(a)") buf
+        read(ifl_unit, "(a)") buf ! title comment line of file for Fock matrix for dimer
         call read_lt_matrix(ifl_unit, F, num_orb_dimer)
         close(ifl_unit)
     end if
 
-    ! calculates charge transfer integral
+    ! calculate charge transfer integral
     write(*, "(a)") "# Calculating transfer integrals ..."
     index_homo1 = num_ele_monomer1 / 2
     index_lumo1 = index_homo1 + 1
@@ -590,23 +611,13 @@ program main
             trim(fl_CT_out), """."
     end if
 
-    ! release memory of numeric arraies
-    deallocate(tmp_arr)
-    tmp_arr => null()
-    deallocate(ipiv)
-    ipiv => null()
+    ! release memory of S, F and C_sep
     deallocate(S)
     S => null()
-    deallocate(C)
-    C => null()
-    deallocate(E)
-    E => null()
     deallocate(F)
     F => null()
     deallocate(C_sep)
     C_sep => null()
-    deallocate(C_inv)
-    C_inv => null()
 
     stop
 end program main

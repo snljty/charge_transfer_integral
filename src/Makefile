@@ -23,7 +23,7 @@ calc_coupling.exe: calc_coupling.o
 
 calc_coupling.o: calc_coupling.f95
 	@echo Compiling $@ ...
-	$(FC) -o $@ -c $<
+	$(FC) -o $@ -c $< -O3
 
 clean_tmp:
 	-del /q calc_coupling.o 2> NUL
