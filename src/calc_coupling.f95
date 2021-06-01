@@ -568,7 +568,7 @@ program main
     else
         write(*, "(a)") "# Reading Fock matrix of dimer ..."
         open(ifl_unit, file = trim(fl_Fock_dimer), action = "read", status = "old")
-        read(ifl_unit, "(a)") buf ! title comment line of file for Fock matrix for dimer
+        read(ifl_unit, "(a)") buf ! title comment line of file for Fock matrix of dimer
         call read_lt_matrix(ifl_unit, F, num_orb_dimer)
         close(ifl_unit)
     end if
