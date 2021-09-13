@@ -17,16 +17,16 @@ LIBPATH := -L .
 
 all: calc_coupling.exe
 
-calc_coupling.exe: calc_coupling.o
+calc_coupling.exe: calc_coupling.obj
 	@echo Linking $@ against $^ ...
 	$(FLINKER) -o $@ $^ $(LIBPATH) -l lapack -l blas -static
 
-calc_coupling.o: calc_coupling.f95
+calc_coupling.obj: calc_coupling.f95
 	@echo Compiling $@ ...
 	$(FC) -o $@ -c $< -O3
 
 clean_tmp:
-	-del /q calc_coupling.o 2> NUL
+	-del /q calc_coupling.obj 2> NUL
 
 clean: clean_tmp
 	-del /q calc_coupling.exe 2> NUL

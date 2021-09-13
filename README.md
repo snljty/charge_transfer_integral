@@ -40,7 +40,11 @@ Use "Calc_coupling.exe --help" to see datails.
 
 You can assign files names for dimer and monomers through command arguments, or by interactive mode. For command arguments, the argument after "--dimer" is the file for dimer (e.g. dimer.fch, dimer.molden), the argument after "--monomer1" is for the first monomer and the argument after "--monomer2" is for the second monomer.
 
+The atom orders in monomer1 should be the first part of dimer, and the orders in monomer2 should be the second part of dimer.
+
 When the matrix of coefficients is singular, you can provide a plain text file containing the Fock Matrix of the Dimer. This file should have the first line as comment, followed by the lower-triangle format Fock matrix for dimer. The "lower-triangle format" can be found in examples\dimer_Fock_Gaussian.txt. For Gaussian users, add a Link-1 task after the input file for dimer with Guess=Read IOp(5/33=3) and the same checkpoint path as above. Then search for the last "Fock matrix (alpha)" or "Fock matrix (beta)" from the Gaussian output file and save it to a new plain text file. Then rerun this program with command argument "-dF your_file_name_for_Fock_matrix_for_dimer".
+
+Also, you can provide a NBO .47 file of dimer with the Fock matrix. For Gaussian users, add a Link-1 task after the input file for dimer with Guess=Read Population=NBORead, and then add a blank line and "$NBO ARCHIVE FILE=MYDIMER $END" at the end of your Gaussian input file for dimer, rerun it and then you'll get a MYDIMER.47 file under your working directory, use "-d47 MYDIMER.47" to provide this file.
 
 All needed arguments that are not passed through command arguments, will be asked by interactive mode, please read the hint information on the screen.
 
