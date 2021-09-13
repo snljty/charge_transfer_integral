@@ -187,9 +187,12 @@ program main
             end if
             write(*, "(a)") "Usage: "
             write(*, "(7x,a,1x,a)")  trim(argv0), "[-h, --help]"
-            write(*, "(7x,a,5(1x,a))") trim(argv0), "[-d, --dimer DIMER]", "[-dF --dimerFock DIMERFOCK]", &
-                                              "[-m1, --monomer1 MONOMER1]", "[-m2, --monomer2 MONOMER2]" , &
-                                              "[-d47 --dimer47 MYDIMER.47] [-f, --full OUTFILE]"
+            write(*, "(7x,a,1x,a)") trim(argv0), "[-d, --dimer DIMER]"
+            write(*, "(7x,a,1x,a)") repeat(" ", len_trim(argv0)), "[-dF, --dimerFock DIMERFOCK]"
+            write(*, "(7x,a,1x,a)") repeat(" ", len_trim(argv0)), "[-d47, --dimer47 MYDIMER.47]"
+            write(*, "(7x,a,1x,a)") repeat(" ", len_trim(argv0)), "[-m1, --monomer1 MONOMER1]"
+            write(*, "(7x,a,1x,a)") repeat(" ", len_trim(argv0)), "[-m2, --monomer2 MONOMER2]"
+            write(*, "(7x,a,1x,a)") repeat(" ", len_trim(argv0)), "[-f, --full OUTFILE]"
             write(*, "()")
             write(*, "(a)") "--help     : print this help message and stop."
             write(*, "(a)") "--dimer    : file contains necessary infomation of the dimer."
