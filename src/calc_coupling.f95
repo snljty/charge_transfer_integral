@@ -618,7 +618,7 @@ program main
         end do
         close(ifl_unit, status = "delete")
         ! calculate C_inv from C
-        write(*, "(a)") "# Inversing coefficient matix of dimer ..."
+        write(*, "(a)") "# Inversing coefficient matrix of dimer ..."
         C_inv = C
         call inverse_matrix_inplace(C_inv, num_orb_dimer, num_orb_dimer, ipiv, tmp_arr, nb)
     else

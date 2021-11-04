@@ -10,12 +10,17 @@
 SHELL := cmd
 FC := gfortran
 FLINKER := $(FC)
-LIBPATH := -L .
-# LIBPATH := -L C:\\PATH\\TO\\YOUR\\LAPACK
+INSTALL_PATH := ../bin
+LAPACKPATH := C:/lapack-3.9.0
+LIBPATH := -L $(LAPACKPATH)/lib
 
-.PHONY: all clean_tmp clean
-
+.PHONY: all
 all: calc_coupling.exe
+
+.PHONY: install
+install: all
+	dir /ad /b "$(INSTALL_PATH)" 1> NUL 2> NUL || mkdir "$(INSTALL_PATH)"
+	copy /y calc_coupling.exe "$(INSTALL_PATH)"
 
 calc_coupling.exe: calc_coupling.obj
 	@echo Linking $@ against $^ ...
@@ -25,9 +30,11 @@ calc_coupling.obj: calc_coupling.f95
 	@echo Compiling $@ ...
 	$(FC) -o $@ -c $< -O3
 
+.PNONY: clean_tmp
 clean_tmp:
 	-del /q calc_coupling.obj 2> NUL
 
+.PHONY: clean
 clean: clean_tmp
 	-del /q calc_coupling.exe 2> NUL
 
