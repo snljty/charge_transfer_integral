@@ -24,7 +24,7 @@ install: all
 
 calc_coupling.exe: calc_coupling.obj
 	@echo Linking $@ against $^ ...
-	$(FLINKER) -o $@ $^ $(LIBPATH) -l lapack -l blas -static
+	$(FLINKER) -o $@ $^ $(LIBPATH) -l lapack -l blas -static -s
 
 calc_coupling.obj: calc_coupling.f90
 	@echo Compiling $@ ...

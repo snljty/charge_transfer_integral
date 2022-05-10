@@ -139,12 +139,11 @@ program main
     write(*, "(a)") "# Generally, all wavefunction files which contains basis functions and "
     write(*, "(a)") "# MO coefficients as well as energies, and supported by Multiwfn, "
     write(*, "(a)") "# including but not limitted to fch/fchk files of Gaussian, molden files "
-    write(*, "(a)") "# of ORCA, should also be supported by this program."
-    ! write(*, "(a)") "# of ORCA or xTB, should also be supported by this program."
+    write(*, "(a)") "# of ORCA or xTB, should also be supported by this program."
     write(*, "(a)") "# Please note that fch/fchk files from traditional semi-empirical methods "
     write(*, "(a)") "# such as PM7 in Gaussian is not supported by Multiwfn, and hence is not "
     write(*, "(a)") "# supported by this program."
-    write(*, "()")
+    write(*, "(a)") "#"
     write(*, "(a)") "# You can also provide a Fock matrix yourself, so we do not need to inversely "
     write(*, "(a)") "# solve the Fock matrix. If you are using Gaussian, the first method is save your "
     write(*, "(a)") "# chk file of dimer, then rerun Gaussian job of dimer with keywords "
@@ -302,7 +301,7 @@ program main
     argv => null()
 
     ! get the files' names if not obtained from the command arguments
-    write(*, "()")
+    write(*, "(a)") "#"
     if (trim(fl_MO_dimer) == "") then
         write(*, "(a)") "# Input the name of file contains MO infomation of the dimer."
         write(*, "(a)") "# If press <Enter> directly, ""dimer.fchk"" will be used."
