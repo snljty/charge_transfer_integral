@@ -685,7 +685,6 @@ program main
         open(ofl_unit, file = fl_CT_out, action = "write", status = "replace")
         write(ofl_unit, "(a,i4,a,i4)") "# Monomer 1    HOMO: ", index_homo1, "        LUMO: ", index_lumo1
         write(ofl_unit, "(a,i4,a,i4)") "# Monomer 2    HOMO: ", index_homo2, "        LUMO: ", index_lumo2
-        write(ofl_unit, "(a)") "# Transfer Integrals between HOMO and LUMO of monomers:"
         write(ofl_unit, "(a)") "# monomer_1    monomer_2    J_eff_12/meV      e_eff_1/eV      e_eff_2/eV   "
         do i = 1, num_orb_monomer1
             do j = 1, num_orb_monomer2
