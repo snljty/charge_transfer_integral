@@ -2,6 +2,10 @@ program main
     implicit none
 
     interface
+        subroutine pause_program()
+            implicit none
+        end subroutine pause_program
+
         subroutine read_matrix(fl_unit, mat, mat_size)
             implicit none
             integer(kind=4), intent(in) :: fl_unit
@@ -317,8 +321,21 @@ program main
     ! deallocate memory for matrices
     deallocate(F, S, C_sep)
 
+    if (argc == 0) then
+        call pause_program()
+    end if
+
     stop
 end program main
+
+subroutine pause_program()
+    implicit none
+
+    write(*, "(a)") "Press <Enter> to exit."
+    read(*, *)
+
+    return
+end subroutine pause_program
 
 function get_num_items_in_line(line, len_line)
     implicit none

@@ -11,7 +11,7 @@ SHELL = cmd
 FC := gfortran
 FLINKER := $(FC)
 INSTALL_PATH := ../bin
-LAPACKPATH := C:/lapack-3.10.0
+LAPACKPATH := C:/lapack-3.10.1
 LIBPATH := -L $(LAPACKPATH)/lib
 
 .PHONY: all

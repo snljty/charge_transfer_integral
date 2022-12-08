@@ -4,6 +4,10 @@ program main
     implicit none
 
     interface
+        subroutine pause_program()
+            implicit none
+        end subroutine pause_program
+
         subroutine inverse_matrix_inplace(a, n, lda, ipiv, tmp, nb)
             implicit none
             integer(kind=4), intent(in) :: n
@@ -707,8 +711,21 @@ program main
     deallocate(C_sep)
     C_sep => null()
 
+    if (argc == 0) then
+        call pause_program()
+    end if
+
     stop
 end program main
+
+subroutine pause_program()
+    implicit none
+
+    write(*, "(a)") "Press <Enter> to exit."
+    read(*, *)
+
+    return
+end subroutine pause_program
 
 subroutine inverse_matrix_inplace(a, n, lda, ipiv, tmp, nb)
     implicit none
