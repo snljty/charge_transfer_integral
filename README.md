@@ -14,7 +14,7 @@ For dimer, we have F @ C = S @ C @ E, where F is the Fock matrix , C is the coef
 
 Let block diagonal matrix C_sep be a matrix with the same shape as C, and the upper left block of C_sep be the coefficient matrix of monomer1, the lower right block of C_sep be the coefficient matrix of monomer2, and other two off-diagonal blocks be zero. 
 
-For the computation details of the algorithm to obtain the coupling, just read the subroutine calc_coupling, and remember that it is done by the site-energy correction method, index1 and index2 stands for the indices of orbitals in monomer1 and monomer2, individually, and J_eff12 stands for the transfer integral between these two orbitals. The unit for all real(kind=8) numbers in this subroutine is a.u. (a.k.a. Hartree).
+For the computation details of the algorithm to obtain the coupling, just read the subroutine calc_coupling, and remember that it is done by the site-energy correction method, index1 and index2 stands for the indices of orbitals in monomer1 and monomer2, individually, and J_eff_12 stands for the transfer integral between these two orbitals. The unit for all real(kind=8) numbers in this subroutine is a.u. (a.k.a. Hartree).
 
 
 
