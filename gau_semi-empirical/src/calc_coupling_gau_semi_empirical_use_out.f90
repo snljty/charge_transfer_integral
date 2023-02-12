@@ -290,13 +290,12 @@ program main
         write(*, "(a,i4,a,i4)") "# Monomer 1    HOMO: ", index_homo1, "        LUMO: ", index_lumo1
         write(*, "(a,i4,a,i4)") "# Monomer 2    HOMO: ", index_homo2, "        LUMO: ", index_lumo2
         write(*, "(a)") "# Transfer Integrals between HOMO and LUMO of monomers:"
-        write(*, "(a)") "# monomer_1    monomer_2    J_eff_12/meV      e_eff_1/eV      e_eff_2/eV   "
+        write(*, "(a)") "# monomer_1    monomer_2    J_eff_12/meV"
         do i = index_homo1, index_lumo1
             do j = index_homo2, index_lumo2
                 call calc_coupling(i, j, num_orb_dimer, num_orb_monomer1, F, S, C_sep, &
                     J_eff12, e_eff1, e_eff2)
-                write(*, "(3x,i4,9x,i4,7x,f13.7,4x,f12.7,4x,f12.7)") i, j, &
-                    J_eff12 * Hartree_to_eV * 1.0D3, e_eff1 * Hartree_to_eV, e_eff2 * Hartree_to_eV
+                write(*, "(3x,i4,9x,i4,7x,f13.7)") i, j, J_eff12 * Hartree_to_eV * 1.0D3
             end do
         end do
     else
@@ -304,13 +303,12 @@ program main
         open(ofl_unit, file = fl_CT_out, action = "write", status = "replace")
         write(ofl_unit, "(a,i4,a,i4)") "# Monomer 1    HOMO: ", index_homo1, "        LUMO: ", index_lumo1
         write(ofl_unit, "(a,i4,a,i4)") "# Monomer 2    HOMO: ", index_homo2, "        LUMO: ", index_lumo2
-        write(ofl_unit, "(a)") "# monomer_1    monomer_2    J_eff_12/meV      e_eff_1/eV      e_eff_2/eV   "
+        write(ofl_unit, "(a)") "# monomer_1    monomer_2    J_eff_12/meV"
         do i = 1, num_orb_monomer1
             do j = 1, num_orb_monomer2
                 call calc_coupling(i, j, num_orb_dimer, num_orb_monomer1, F, S, C_sep, &
                     J_eff12, e_eff1, e_eff2)
-                write(ofl_unit, "(3x,i4,9x,i4,7x,f13.7,4x,f12.7,4x,f12.7)") i, j, &
-                    J_eff12 * Hartree_to_eV * 1.0D3, e_eff1 * Hartree_to_eV, e_eff2 * Hartree_to_eV
+                write(ofl_unit, "(3x,i4,9x,i4,7x,f13.7)") i, j, J_eff12 * Hartree_to_eV * 1.0D3
             end do
         end do
         close(ofl_unit)
