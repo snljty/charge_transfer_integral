@@ -8,89 +8,89 @@ program main
 
         subroutine read_matrix(fl_unit, mat, mat_size)
             implicit none
-            integer(kind=4), intent(in) :: fl_unit
-            real(kind=8), intent(out) :: mat(:, :)
-            integer(kind=4), intent(in) :: mat_size
+            integer, intent(in) :: fl_unit
+            double precision, intent(out) :: mat(:, :)
+            integer, intent(in) :: mat_size
         end subroutine read_matrix
 
         subroutine read_lt_matrix(fl_unit, mat, mat_size)
             implicit none
-            integer(kind=4), intent(in) :: fl_unit
-            real(kind=8), intent(out) :: mat(:, :)
-            integer(kind=4), intent(in) :: mat_size
+            integer, intent(in) :: fl_unit
+            double precision, intent(out) :: mat(:, :)
+            integer, intent(in) :: mat_size
         end subroutine read_lt_matrix
 
         subroutine calc_coupling(index1, index2, mat_size, mat_block1_size, F, S, C_sep, &
             J_eff12, e_eff1, e_eff2)
             implicit none
-            integer(kind=4), intent(in) :: index1
-            integer(kind=4), intent(in) :: index2
-            integer(kind=4), intent(in) :: mat_size
-            integer(kind=4), intent(in) :: mat_block1_size
-            real(kind=8), intent(in) :: F(mat_size, mat_size)
-            real(kind=8), intent(in) :: S(mat_size, mat_size)
-            real(kind=8), intent(in) :: C_sep(mat_size, mat_size)
-            real(kind=8), intent(out) :: J_eff12
-            real(kind=8), intent(out) :: e_eff1
-            real(kind=8), intent(out) :: e_eff2
+            integer, intent(in) :: index1
+            integer, intent(in) :: index2
+            integer, intent(in) :: mat_size
+            integer, intent(in) :: mat_block1_size
+            double precision, intent(in) :: F(mat_size, mat_size)
+            double precision, intent(in) :: S(mat_size, mat_size)
+            double precision, intent(in) :: C_sep(mat_size, mat_size)
+            double precision, intent(out) :: J_eff12
+            double precision, intent(out) :: e_eff1
+            double precision, intent(out) :: e_eff2
         end subroutine calc_coupling
     end interface
 
-    integer(kind=4) :: argc
-    integer(kind=4) :: iarg
-    ! integer(kind=4) :: arg_status
+    integer :: argc
+    integer :: iarg
+    ! integer :: arg_status
     character(kind=1,len=128), allocatable :: argv(:)
 
-    integer(kind=4), parameter :: stdin_unit = 5
-    integer(kind=4), parameter :: stdout_unit = 6
-    integer(kind=4), parameter :: stderr_unit = 0
+    integer, parameter :: stdin_unit = 5
+    integer, parameter :: stdout_unit = 6
+    integer, parameter :: stderr_unit = 0
 
-    integer(kind=4), parameter :: exit_success = 0
-    integer(kind=4), parameter :: exit_failure = 1
+    integer, parameter :: exit_success = 0
+    integer, parameter :: exit_failure = 1
 
-    real(kind=8), parameter :: h_Planck = 6.62607015D-34
-    real(kind=8), parameter :: epsilon_0 = 8.854187817D-12
-    real(kind=8), parameter :: q_e = 1.602176634D-19
-    real(kind=8), parameter :: m_e = 9.10938215D-31
-    real(kind=8), parameter :: Hartree_to_eV = m_e * q_e ** 3 / (4.0D0 * epsilon_0 ** 2 * h_Planck ** 2)
+    double precision, parameter :: h_Planck = 6.62607015D-34
+    double precision, parameter :: epsilon_0 = 8.854187817D-12
+    double precision, parameter :: q_e = 1.602176634D-19
+    double precision, parameter :: m_e = 9.10938215D-31
+    double precision, parameter :: Hartree_to_eV = m_e * q_e ** 3 / (4.0D0 * epsilon_0 ** 2 * h_Planck ** 2)
 
     character(kind=1,len=256) :: buf
-    integer(kind=4) :: buf_pos
+    integer :: buf_pos
 
     character(kind=1,len=128) :: fl_MO_dimer
     character(kind=1,len=128) :: fl_MO_monomer1
     character(kind=1,len=128) :: fl_MO_monomer2
     character(kind=1,len=128) :: fl_CT_out
-    integer(kind=4), parameter :: ifl_unit = 10
-    integer(kind=4), parameter :: ofl_unit = 11
+    integer, parameter :: ifl_unit = 10
+    integer, parameter :: ofl_unit = 11
 
-    integer(kind=4) :: num_ele_dimer
-    integer(kind=4) :: num_ele_monomer1
-    integer(kind=4) :: num_ele_monomer2
-    integer(kind=4) :: num_orb_dimer
-    integer(kind=4) :: num_orb_monomer1
-    integer(kind=4) :: num_orb_monomer2
+    integer :: num_ele_dimer
+    integer :: num_ele_monomer1
+    integer :: num_ele_monomer2
+    integer :: num_orb_dimer
+    integer :: num_orb_monomer1
+    integer :: num_orb_monomer2
 
-    integer(kind=4) :: num_ele_alpha ! temporary
-    integer(kind=4) :: num_ele_beta  ! temporary
+    integer :: num_ele_alpha ! temporary
+    integer :: num_ele_beta  ! temporary
 
-    integer(kind=4) :: index_homo1
-    integer(kind=4) :: index_lumo1
-    integer(kind=4) :: index_homo2
-    integer(kind=4) :: index_lumo2
+    integer :: index_homo1
+    integer :: index_lumo1
+    integer :: index_homo2
+    integer :: index_lumo2
 
-    real(kind=8), allocatable :: S(:, :)
-    real(kind=8), allocatable :: F(:, :)
-    real(kind=8), allocatable :: C_sep(:, :)
+    double precision, allocatable :: S(:, :)
+    double precision, allocatable :: F(:, :)
+    double precision, allocatable :: C_sep(:, :)
 
-    real(kind=8) :: J_eff12
-    real(kind=8) :: e_eff1
-    real(kind=8) :: e_eff2
+    double precision :: J_eff12
+    double precision :: e_eff1
+    double precision :: e_eff2
 
-    integer(kind=4) :: i
-    integer(kind=4) :: j
+    integer :: i
+    integer :: j
 
-    integer(kind=4) :: io_status
+    integer :: io_status
 
     ! get command arguments
     argc = command_argument_count()
@@ -291,13 +291,23 @@ program main
         write(*, "(a,i4,a,i4)") "# Monomer 2    HOMO: ", index_homo2, "        LUMO: ", index_lumo2
         write(*, "(a)") "# Transfer Integrals between HOMO and LUMO of monomers:"
         write(*, "(a)") "# monomer_1    monomer_2    J_eff_12/meV"
-        do i = index_homo1, index_lumo1
-            do j = index_homo2, index_lumo2
-                call calc_coupling(i, j, num_orb_dimer, num_orb_monomer1, F, S, C_sep, &
-                    J_eff12, e_eff1, e_eff2)
-                write(*, "(3x,i4,9x,i4,7x,f13.7)") i, j, J_eff12 * Hartree_to_eV * 1.0D3
-            end do
-        end do
+        ! do i = index_homo1, index_lumo1
+        !     do j = index_homo2, index_lumo2
+        !         call calc_coupling(i, j, num_orb_dimer, num_orb_monomer1, F, S, C_sep, &
+        !             J_eff12, e_eff1, e_eff2)
+        !         write(*, "(3x,i4,9x,i4,7x,f13.7)") i, j, J_eff12 * Hartree_to_eV * 1.0D3
+        !     end do
+        ! end do
+        write(*, "(a,1x,a)") "#", "HOMO-HOMO:"
+        call calc_coupling(i, j, num_orb_dimer, num_orb_monomer1, F, S, C_sep, &
+            J_eff12, e_eff1, e_eff2)
+        write(*, "(3x,i4,9x,i4,7x,f13.7)") i, j, J_eff12 * Hartree_to_eV * 1.0D3
+        i = index_lumo1
+        j = index_lumo2
+        write(*, "(a,1x,a)") "#", "LUMO-LUMO:"
+        call calc_coupling(i, j, num_orb_dimer, num_orb_monomer1, F, S, C_sep, &
+            J_eff12, e_eff1, e_eff2)
+        write(*, "(3x,i4,9x,i4,7x,f13.7)") i, j, J_eff12 * Hartree_to_eV * 1.0D3      
     else
         write(*, "(a)") "Calculating transfer integrals ..."
         open(ofl_unit, file = fl_CT_out, action = "write", status = "replace")
@@ -337,10 +347,10 @@ end subroutine pause_program
 
 function get_num_items_in_line(line, len_line)
     implicit none
-    integer(kind=4), intent(in) :: len_line
+    integer, intent(in) :: len_line
     character(kind=1,len=len_line), intent(in) :: line
-    integer(kind=4) :: get_num_items_in_line
-    integer(kind=4) :: pos_read_in_line
+    integer :: get_num_items_in_line
+    integer :: pos_read_in_line
 
     pos_read_in_line = len_trim(line)
     get_num_items_in_line = 0
@@ -361,16 +371,16 @@ end function get_num_items_in_line
 ! but not provided in this code.
 subroutine read_matrix(fl_unit, mat, mat_size)
     implicit none
-    integer(kind=4), intent(in) :: fl_unit
-    real(kind=8), intent(out) :: mat(:, :)
-    integer(kind=4), intent(in) :: mat_size
-    integer(kind=4), external :: get_num_items_in_line
+    integer, intent(in) :: fl_unit
+    double precision, intent(out) :: mat(:, :)
+    integer, intent(in) :: mat_size
+    integer, external :: get_num_items_in_line
 
     character(kind=1,len=256) :: buf
-    integer(kind=4) :: col_in_this_group
-    integer(kind=4) :: pos_read_in_line
-    integer(kind=4) :: i
-    integer(kind=4) :: j
+    integer :: col_in_this_group
+    integer :: pos_read_in_line
+    integer :: i
+    integer :: j
 
     j = 1
     do while (.true.)
@@ -396,19 +406,19 @@ end subroutine read_matrix
 ! but not provided in this code.
 subroutine read_lt_matrix(fl_unit, mat, mat_size)
     implicit none
-    integer(kind=4), intent(in) :: fl_unit
-    real(kind=8), intent(out) :: mat(:, :)
-    integer(kind=4), intent(in) :: mat_size
-    integer(kind=4), external :: get_num_items_in_line
-    integer(kind=4) :: max_col_use
+    integer, intent(in) :: fl_unit
+    double precision, intent(out) :: mat(:, :)
+    integer, intent(in) :: mat_size
+    integer, external :: get_num_items_in_line
+    integer :: max_col_use
     character(kind=1,len=256) :: buf
-    integer(kind=4) :: i
-    integer(kind=4) :: j
-    integer(kind=4) :: k
-    integer(kind=4) :: pos_read_in_line
-    integer(kind=4) :: pos_next
-    integer(kind=4) :: start_index
-    integer(kind=4) :: num_groups
+    integer :: i
+    integer :: j
+    integer :: k
+    integer :: pos_read_in_line
+    integer :: pos_next
+    integer :: start_index
+    integer :: num_groups
 
     read(fl_unit, "(a)") buf
     backspace(fl_unit)
@@ -447,20 +457,20 @@ end subroutine read_lt_matrix
 
 subroutine calc_coupling(index1, index2, mat_size, mat_block1_size, F, S, C_sep, J_eff12, e_eff1, e_eff2)
     implicit none
-    integer(kind=4), intent(in) :: index1
-    integer(kind=4), intent(in) :: index2
-    integer(kind=4), intent(in) :: mat_size
-    integer(kind=4), intent(in) :: mat_block1_size
-    real(kind=8), intent(in) :: F(mat_size, mat_size)
-    real(kind=8), intent(in) :: S(mat_size, mat_size)
-    real(kind=8), intent(in) :: C_sep(mat_size, mat_size)
-    real(kind=8), intent(out) :: J_eff12
-    real(kind=8), intent(out) :: e_eff1
-    real(kind=8), intent(out) :: e_eff2
-    real(kind=8) :: e1
-    real(kind=8) :: e2
-    real(kind=8) :: J12
-    real(kind=8) :: S12
+    integer, intent(in) :: index1
+    integer, intent(in) :: index2
+    integer, intent(in) :: mat_size
+    integer, intent(in) :: mat_block1_size
+    double precision, intent(in) :: F(mat_size, mat_size)
+    double precision, intent(in) :: S(mat_size, mat_size)
+    double precision, intent(in) :: C_sep(mat_size, mat_size)
+    double precision, intent(out) :: J_eff12
+    double precision, intent(out) :: e_eff1
+    double precision, intent(out) :: e_eff2
+    double precision :: e1
+    double precision :: e2
+    double precision :: J12
+    double precision :: S12
 
     e1  = sum(matmul(matmul(reshape(C_sep(:,                   index1), (/1, mat_size/)), F), &
                             reshape(C_sep(:,                   index1), (/mat_size, 1/))))

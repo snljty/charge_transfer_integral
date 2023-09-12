@@ -21,11 +21,11 @@ calc_coupling_gau_semi_empirical_use_out.obj: calc_coupling_gau_semi_empirical_u
 	@echo Compiling $@ ...
 	$(FC) -o $@ -c $< -O2 -s
 
-.PNONY: clean_tmp
-clean_tmp:
+.PHONY: clean
+clean:
 	-del /q calc_coupling_gau_semi_empirical_use_out.obj 2> NUL
 
-.PHONY: clean
-clean: clean_tmp
+.PHONY: veryclean
+veryclean: clean
 	-del /q calc_coupling_gau_semi_empirical_use_out.exe 2> NUL
 
