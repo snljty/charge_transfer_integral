@@ -1,6 +1,6 @@
 # Makefile for calc_coupling_gau_semi_empirical_use_out
 
-SHELL = /bin/bash
+SHELL = bash
 FC := gfortran
 FLINKER := $(FC)
 INSTALL_PATH := ../bin

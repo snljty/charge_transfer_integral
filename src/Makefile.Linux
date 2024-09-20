@@ -7,11 +7,11 @@
 # This program is not parallized, partly due to lapack and blas are not multithread libraries, 
 # and the author of this program is not familiar with OpenBLAS or MKL, as well as parallel programming.
 
-SHELL = /bin/bash
+SHELL = bash
 FC := gfortran
 FLINKER := $(FC)
 INSTALL_PATH := ../bin
-LAPACKPATH := /opt/lapack-3.10.0
+# LAPACKPATH := /opt/lapack-3.12.0
 # LIBPATH := -L $(LAPACKPATH)/lib
 LIBPATH := 
 
