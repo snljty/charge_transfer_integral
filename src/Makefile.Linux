@@ -1,0 +1,41 @@
+# Makefile for calc_coupling.x
+# libraries lapack and blas are required to be linked.
+# for Windows version, they are already contained in current directory, and you can also 
+# download them from http://icl.cs.utk.edu/lapack-for-windows/lapack/ yourself.
+# for Linux version, you may use apt or yum to install from repository, or download source code
+# from http://www.netlib.org/lapack/ and compile yourself.
+# This program is not parallized, partly due to lapack and blas are not multithread libraries, 
+# and the author of this program is not familiar with OpenBLAS or MKL, as well as parallel programming.
+
+SHELL = /bin/bash
+FC := gfortran
+FLINKER := $(FC)
+INSTALL_PATH := ../bin
+LAPACKPATH := /opt/lapack-3.10.0
+# LIBPATH := -L $(LAPACKPATH)/lib
+LIBPATH := 
+
+.PHONY: all
+all: calc_coupling.x
+
+.PHONY: install
+install: all
+	[[ -d "$(INSTALL_PATH)" ]] || mkdir -p "$(INSTALL_PATH)"
+	cp calc_coupling.x "$(INSTALL_PATH)"
+
+calc_coupling.x: calc_coupling.o
+	@echo Linking $@ against $^ ...
+	$(FLINKER) -o $@ $^ $(LIBPATH) -l lapack -l blas -static -s
+
+%.o: %.f90
+	@echo Compiling $@ ...
+	$(FC) -o $@ -c $< -O2 -s -ffpe-summary=none
+
+.PHONY: clean
+clean:
+	-rm -f calc_coupling.o
+
+.PHONY: veryclean
+veryclean: clean
+	-rm -f calc_coupling.x
+

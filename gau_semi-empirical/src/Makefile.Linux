@@ -1,0 +1,31 @@
+# Makefile for calc_coupling_gau_semi_empirical_use_out
+
+SHELL = /bin/bash
+FC := gfortran
+FLINKER := $(FC)
+INSTALL_PATH := ../bin
+
+.PHONY: all
+all: calc_coupling_gau_semi_empirical_use_out.x
+
+.PHONY: install
+install: all
+	[[ -d "$(INSTALL_PATH)" ]] || mkdir -p "$(INSTALL_PATH)"
+	cp calc_coupling_gau_semi_empirical_use_out.x "$(INSTALL_PATH)"
+
+calc_coupling_gau_semi_empirical_use_out.x: calc_coupling_gau_semi_empirical_use_out.o
+	@echo Linking $@ against $^ ...
+	$(FLINKER) -o $@ $^ -static -s
+
+%.o: %.f90
+	@echo Compiling $@ ...
+	$(FC) -o $@ -c $< -O2 -s -ffpe-summary=none
+
+.PHONY: clean
+clean:
+	-rm -f calc_coupling_gau_semi_empirical_use_out.o
+
+.PHONY: veryclean
+veryclean: clean
+	-rm -f calc_coupling_gau_semi_empirical_use_out.x
+

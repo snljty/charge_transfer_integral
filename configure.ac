@@ -23,5 +23,7 @@ AC_CHECK_LIB([lapack], [dsyev], [], [AC_MSG_ERROR([LAPACK not found])])
 LDFLAGS="-static"
 AC_SUBST(LDFLAGS)
 
+FCFLAGS="$FCFLAGS -ffpe-summary=none"
+
 AC_OUTPUT([Makefile])
 

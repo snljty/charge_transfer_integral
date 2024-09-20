@@ -11,7 +11,7 @@ SHELL = cmd
 FC := gfortran
 FLINKER := $(FC)
 INSTALL_PATH := ../bin
-LAPACKPATH := C:/lapack-3.11.0
+LAPACKPATH := C:/lapack-3.12.0
 LIBPATH := -L $(LAPACKPATH)/lib
 
 .PHONY: all
@@ -26,9 +26,9 @@ calc_coupling.exe: calc_coupling.obj
 	@echo Linking $@ against $^ ...
 	$(FLINKER) -o $@ $^ $(LIBPATH) -l lapack -l blas -static -s
 
-calc_coupling.obj: calc_coupling.f90
+%.obj: %.f90
 	@echo Compiling $@ ...
-	$(FC) -o $@ -c $< -O2 -s
+	$(FC) -o $@ -c $< -O2 -s -ffpe-summary=none
 
 .PHONY: clean
 clean:

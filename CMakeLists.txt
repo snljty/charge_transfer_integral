@@ -57,6 +57,8 @@ if (${BUILD_SHARED_LINKED_EXE} STREQUAL OFF)
     endif ()
 endif ()
 
+set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -ffpe-summary=none")
+
 add_executable(${PROJECT_NAME} src/calc_coupling.f90)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LAPACK_LIBRARIES})

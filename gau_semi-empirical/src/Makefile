@@ -17,9 +17,9 @@ calc_coupling_gau_semi_empirical_use_out.exe: calc_coupling_gau_semi_empirical_u
 	@echo Linking $@ against $^ ...
 	$(FLINKER) -o $@ $^ -static -s
 
-calc_coupling_gau_semi_empirical_use_out.obj: calc_coupling_gau_semi_empirical_use_out.f90
+%.obj: %.f90
 	@echo Compiling $@ ...
-	$(FC) -o $@ -c $< -O2 -s
+	$(FC) -o $@ -c $< -O2 -s -ffpe-summary=none
 
 .PHONY: clean
 clean:
