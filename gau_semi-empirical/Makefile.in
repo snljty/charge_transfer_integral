@@ -193,7 +193,9 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
 FC = @FC@
-FCFLAGS = @FCFLAGS@
+
+# calc_coupling_gau_semi_empirical_use_out_LDADD = -llapack -lblas
+FCFLAGS = @FCFLAGS@ -ffpe-summary=none
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -260,7 +262,6 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 calc_coupling_gau_semi_empirical_use_out_SOURCES = src/calc_coupling_gau_semi_empirical_use_out.f90 
-# calc_coupling_gau_semi_empirical_use_out_LDADD = -llapack -lblas
 AUTOMAKE_OPTIONS = foreign
 all: all-am
 
