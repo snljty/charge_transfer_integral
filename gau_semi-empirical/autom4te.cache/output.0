@@ -657,8 +657,7 @@ PACKAGE_VERSION
 PACKAGE_TARNAME
 PACKAGE_NAME
 PATH_SEPARATOR
-SHELL
-am__quote'
+SHELL'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
@@ -2847,6 +2846,8 @@ ac_compiler_gnu=$ac_cv_fc_compiler_gnu
 # AC_CHECK_LIB([lapack], [dsyev], [], [AC_MSG_ERROR([LAPACK not found])])
 LDFLAGS="-static"
 
+
+FCFLAGS="$FCFLAGS -ffpe-summary=none"
 
 ac_config_files="$ac_config_files Makefile"
 

@@ -13,6 +13,8 @@ if (BUILD_SHARED_LINKED_EXE_VALID_OPTION_INDEX EQUAL -1)
     message(FATAL_ERROR "BUILD_SHARED_LINKED_EXE can only be ON or OFF")
 endif ()
 
+set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -ffpe-summary=none")
+
 if (${BUILD_SHARED_LINKED_EXE} STREQUAL OFF)
     string(APPEND CMAKE_EXE_LINKER_FLAGS " -static")
 endif ()

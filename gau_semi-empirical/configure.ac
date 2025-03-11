@@ -23,5 +23,7 @@ AC_PROG_FC
 LDFLAGS="-static"
 AC_SUBST(LDFLAGS)
 
+FCFLAGS="$FCFLAGS -ffpe-summary=none"
+
 AC_OUTPUT([Makefile])
 
