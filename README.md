@@ -129,7 +129,7 @@ You can assign files names for dimer and monomers through command arguments. E.g
 
 The atom orders in monomer 1 should be the first part of dimer, and the orders in monomer 2 should be the second part of dimer.
 
-`IOp(3/32=2) NoSymmetry` **MUST** present in **all** input files. `IOp(3/33=1)` **MUST** present in **dimer** input ``.gjf` file. You can use `--Link1--` to provide an additional step for **dimer** to provide a Fock matrix with `IOp(5/33=3) Guess=Read NoSymmetry`. E.g.
+`IOp(3/32=2) NoSymmetry` **MUST** present in **all** input files. `IOp(3/33=1)` **MUST** present in **dimer** input `.gjf` file. You can use `--Link1--` to provide an additional step for **dimer** to provide a Fock matrix with `IOp(5/33=3) Guess=Read NoSymmetry`. E.g.
 
 ```
 %chk=dimer.chk
