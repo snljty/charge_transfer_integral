@@ -6,8 +6,27 @@
 
 ## A brief introduction of the algorithm
 
-We use $\boldsymbol{F}_\text{dimer}$ as the Fock matrix of dimer, $\boldsymbol{S}_\text{dimer}$ as the basis functions overlap matrix of dimer, $\boldsymbol{C}_\text{monomer1}$ and $\boldsymbol{C}_\text{monomer2}$ as orbitals coefficient matrixes on the basis of monomer basis functions of monomer 1 and 2 separately. Define combined fragments molecule orbitals coefficient matrix $\boldsymbol{C}_\text{frags}$ as:
-
+We use 
+$$
+\boldsymbol{F}_\text{dimer}
+$$
+as the Fock matrix of dimer, 
+$$
+\boldsymbol{S}_\text{dimer}
+$$
+as the basis functions overlap matrix of dimer,
+$$
+\boldsymbol{C}_\text{monomer1}
+$$
+and 
+$$
+\boldsymbol{C}_\text{monomer2}
+$$
+as orbitals coefficient matrixes on the basis of monomer basis functions of monomer 1 and 2 separately. Define combined fragments molecule orbitals coefficient matrix
+$$
+\boldsymbol{C}_\text{frags}
+$$
+as:
 $$
 \boldsymbol{C}_\text{frags}\equiv
 \begin{bmatrix}
@@ -50,8 +69,20 @@ J_{ij} & e_j \\
 \end{bmatrix},
 $$
 
-where $J_{ij}={\boldsymbol{F}_\text{frags}}_{i,j}$, $e_i=J_{ii}$, $e_j=J_{jj}$. the $J_{ij}$ is the transfer integral between orbital $i$ and $j$ at **nonorthogonal basis**. The nonorthogonality is caused by the 2-states overlap matrix: 
+where
+$$
+J_{ij}={\boldsymbol{F}_\text{frags}}_{i,j},
+$$
 
+$$
+e_i=J_{ii}, 
+$$
+
+$$
+e_j=J_{jj}.
+$$
+
+The $J_{ij}$ is the transfer integral between orbital $i$ and $j$ at **nonorthogonal basis**. The nonorthogonality is caused by the 2-states overlap matrix: 
 $$
 \boldsymbol{S}=
 \begin{bmatrix}
@@ -61,8 +92,11 @@ S_{ij} & 1 \\
 \ne\boldsymbol{I},
 $$
 
-where $S_{ij}={\boldsymbol{S}_\text{frags}}_{i,j}$ is generally not zero. To find out the **effective** transfer integral (a.k.a. coupling) between orbital $i$ and $j$ at **orthogonal** basis, a Löwdin orthogonalization is needed, that is so transform from a generalized eigen problem $\boldsymbol{F}\boldsymbol{C}=\boldsymbol{S}\boldsymbol{C}\boldsymbol{\varepsilon}$ to a simple eigen problem $\boldsymbol{F}^\prime\boldsymbol{C}^\prime=\boldsymbol{C}^\prime\boldsymbol{\varepsilon}$. To do this, for positive-defined matrix $\boldsymbol{S}$, solving its eigenvalues and eigenvectors by diagonalization gives:
-
+where 
+$$
+S_{ij}={\boldsymbol{S}_\text{frags}}_{i,j}
+$$
+is generally not zero. To find out the **effective** transfer integral (a.k.a. coupling) between orbital $i$ and $j$ at **orthogonal** basis, a Löwdin orthogonalization is needed, that is so transform from a generalized eigen problem $\boldsymbol{F}\boldsymbol{C}=\boldsymbol{S}\boldsymbol{C}\boldsymbol{\varepsilon}$ to a simple eigen problem $\boldsymbol{F}^\prime\boldsymbol{C}^\prime=\boldsymbol{C}^\prime\boldsymbol{\varepsilon}$. To do this, for positive-defined matrix $\boldsymbol{S}$, solving its eigenvalues and eigenvectors by diagonalization gives:
 $$
 \boldsymbol{S}\equiv\boldsymbol{U}\boldsymbol{s}\boldsymbol{U}^\top,
 $$
