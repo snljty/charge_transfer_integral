@@ -1,79 +1,74 @@
-cmake_minimum_required(VERSION 3.18) # since 3.18 supports module FindLAPACK
+cmake_minimum_required(VERSION 3.16)
 
-enable_language(Fortran)
+project(calc_coupling
+    VERSION 2.0
+    DESCRIPTION "2-states FMO dimer coupling calculator"
+    LANGUAGES Fortran
+)
 
-project(calc_coupling)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Build type" FORCE)
+endif()
 
-# list(PREPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
+set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
+file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY})
 
-option(BUILD_SHARED_LINKED_EXE "Build shared linked executable : ON OFF (BOOL)" OFF)
-set(BUILD_SHARED_LINKED_EXE_VALID_OPTIONS ON OFF)
-list(FIND BUILD_SHARED_LINKED_EXE_VALID_OPTIONS ${BUILD_SHARED_LINKED_EXE} BUILD_SHARED_LINKED_EXE_VALID_OPTION_INDEX)
-if (BUILD_SHARED_LINKED_EXE_VALID_OPTION_INDEX EQUAL -1)
-    message(FATAL_ERROR "BUILD_SHARED_LINKED_EXE can only be ON or OFF")
-endif ()
+# --- 添加选项：是否启用 MKL ---
+option(USE_MKL "Enable Intel MKL for linear algebra" ON)
 
-find_package(LAPACK REQUIRED)
+# --- 优先级查找 MKL（仅在 USE_MKL=ON 时尝试） ---
+if(USE_MKL)
+    find_package(MKL CONFIG QUIET)
+    if(NOT MKL_FOUND)
+        find_package(MKL QUIET)
+    endif()
+endif()
 
-if (${BUILD_SHARED_LINKED_EXE} STREQUAL OFF)
-    string(APPEND CMAKE_EXE_LINKER_FLAGS " -static")
-    set(BLA_STATIC ON)
-    if (${BLA_STATIC} STREQUAL ON)
-        if (${CMAKE_SYSTEM_NAME} MATCHES Windows)
-            list(GET LAPACK_LIBRARIES 0 LAPACK_ITSELF_LIBRARY)
-            get_filename_component(LAPACK_LIB_DIR ${LAPACK_ITSELF_LIBRARY} DIRECTORY)
-            unset(LAPACK_ITSELF_LIBRARY)
-            foreach (LAPACK_LIB ${LAPACK_LIBRARIES})
-                get_filename_component(LAPACK_LIB_NAME ${LAPACK_LIB} NAME)
-                # get_filename_component(LAPACK_LIB_NAME_STATIC ${LAPACK_LIB} NAME_WE)
-                # string(APPEND LAPACK_LIB_NAME_STATIC ".a")
-                string(REPLACE ".dll.a" ".a" LAPACK_LIB_STATIC_NAME ${LAPACK_LIB_NAME})
-                list(APPEND LAPACK_LIBRARIES_SWP ${LAPACK_LIB_DIR}/${LAPACK_LIB_STATIC_NAME})
-            endforeach ()
-            unset(LAPACK_LIB)
-            unset(LAPACK_LIB_NAME)
-            unset(LAPACK_LIB_STATIC_NAME)
-            set(LAPACK_LIBRARIES ${LAPACK_LIBRARIES_SWP})
-            unset(LAPACK_LIBRARIES_SWP)
-            message("-- Will use static libraries LAPACK_LIBRARIES ${LAPACK_LIBRARIES} .")
-        else ()
-            list(GET LAPACK_LIBRARIES 0 LAPACK_ITSELF_LIBRARY)
-            get_filename_component(LAPACK_LIB_DIR ${LAPACK_ITSELF_LIBRARY} DIRECTORY)
-            unset(LAPACK_ITSELF_LIBRARY)
-            foreach (LAPACK_LIB ${LAPACK_LIBRARIES})
-                get_filename_component(LAPACK_LIB_NAME ${LAPACK_LIB} NAME)
-                # get_filename_component(LAPACK_LIB_NAME_STATIC ${LAPACK_LIB} NAME_WE)
-                # string(APPEND LAPACK_LIB_NAME_STATIC ".a")
-                string(REPLACE ".so" ".a" LAPACK_LIB_STATIC_NAME ${LAPACK_LIB_NAME})
-                list(APPEND LAPACK_LIBRARIES_SWP ${LAPACK_LIB_DIR}/${LAPACK_LIB_STATIC_NAME})
-            endforeach ()
-            unset(LAPACK_LIB)
-            unset(LAPACK_LIB_NAME)
-            unset(LAPACK_LIB_STATIC_NAME)
-            set(LAPACK_LIBRARIES ${LAPACK_LIBRARIES_SWP})
-            unset(LAPACK_LIBRARIES_SWP)
-            message("-- Will use static libraries LAPACK_LIBRARIES ${LAPACK_LIBRARIES} .")
-        endif ()
-    endif ()
-endif ()
+if(MKL_FOUND AND USE_MKL)
+    message(STATUS "Using Intel MKL")
+    set(LINALG_LIBRARIES MKL::MKL)
+else()
+    message(STATUS "Intel MKL disabled or not found. Using generic LAPACK/BLAS.")
+    find_package(LAPACK REQUIRED)
+    set(LINALG_LIBRARIES ${LAPACK_LIBRARIES})
+endif()
 
-set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -ffpe-summary=none")
+if(MKL_FOUND)
+    message(STATUS "Using Intel MKL")
+    set(LINALG_LIBRARIES MKL::MKL)
+else()
+    message(STATUS "Intel MKL not found. Trying generic LAPACK/BLAS.")
+    find_package(LAPACK REQUIRED)
+    if(LAPACK_FOUND)
+        set(LINALG_LIBRARIES ${LAPACK_LIBRARIES})
+    else()
+        message(FATAL_ERROR "Neither Intel MKL nor generic LAPACK/BLAS found. Please load one of them.")
+    endif()
+endif()
 
-add_executable(${PROJECT_NAME} src/calc_coupling.f90)
+message(STATUS "Linear algebra library: ${LINALG_LIBRARIES}")
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LAPACK_LIBRARIES})
+set(SOURCES
+    src/coupling_module.f90
+    src/calculator_basic.f90
+    src/basic_reader.f90
+    src/matrix_reader.f90
+    src/coupling.f90
+    src/main.f90
+)
 
-if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE RelWithDebInfo)
-endif ()
-
-set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -ffpe-summary=none")
-
-set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
-
-if ("${CMAKE_INSTALL_PREFIX}" STREQUAL "${CMAKE_BINARY_DIR}")
-    message(FATAL_ERROR "The source directory cannot be the same as install directory.")
-endif ()
+add_executable(${PROJECT_NAME} ${SOURCES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LINALG_LIBRARIES})
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_Fortran_MODULE_DIRECTORY})
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+message(STATUS "")
+message(STATUS "=== Configuration Summary ===")
+message(STATUS "Project: ${PROJECT_NAME}")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Fortran compiler: ${CMAKE_Fortran_COMPILER}")
+message(STATUS "Linear algebra library: ${LINALG_LIBRARIES}")
+message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "=============================")
