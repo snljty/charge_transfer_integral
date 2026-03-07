@@ -9,7 +9,11 @@
 We use $\boldsymbol{F}_\text{dimer}$ as the Fock matrix of dimer, $\boldsymbol{S}_\text{dimer}$ as the basis functions overlap matrix of dimer, $\boldsymbol{C}_\text{monomer1}$ and $\boldsymbol{C}_\text{monomer2}$ as orbitals coefficient matrixes on the basis of monomer basis functions of monomer 1 and 2 separately. Define combined fragments molecule orbitals coefficient matrix $\boldsymbol{C}_\text{frags}$ as:
 
 $$
-\boldsymbol{C}_\text{frags}\equiv\begin{bmatrix}\boldsymbol{C}_\text{monomer1}&\boldsymbol{0}\\\boldsymbol{0}&\boldsymbol{C}_\text{monomer2}\\\end{bmatrix}.
+\boldsymbol{C}_\text{frags}\equiv
+\begin{bmatrix}
+\boldsymbol{C}_\text{monomer1} & \boldsymbol{0} \\
+\boldsymbol{0} & \boldsymbol{C}_\text{monomer2}\\
+\end{bmatrix}.
 $$
 
 Then the interaction between two monomers at the environment of dimer is: 
@@ -39,13 +43,22 @@ $$
 For frontier orbitals approximation, extra electron transfers from monomer 1 to monomer 2 via their LUMOs, extra hole transfers from monomer 1 to monomer 2 via their HOMOs. For orbitals approximation model, let $i$ and $j$ be indices of initial orbital of monomer 1 (e.g. LUMO of it) and final orbital of monomer 2 (e.g. LUMO of it) in $\boldsymbol{C}_\text{frags}$ where the carrier is transferred from and to, then the Hamiltonian of this 2-states model is:
 
 $$
-\boldsymbol{F}=\begin{bmatrix}e_i&J_{ij}\\J_{ij}&e_j\\\end{bmatrix},
+\boldsymbol{F}=
+\begin{bmatrix}
+e_i & J_{ij} \\
+J_{ij} & e_j \\
+\end{bmatrix},
 $$
 
 where $J_{ij}={\boldsymbol{F}_\text{frags}}_{i,j}$, $e_i=J_{ii}$, $e_j=J_{jj}$. the $J_{ij}$ is the transfer integral between orbital $i$ and $j$ at **nonorthogonal basis**. The nonorthogonality is caused by the 2-states overlap matrix: 
 
 $$
-\boldsymbol{S}=\begin{bmatrix}1&S_{ij}\\S_{ij}&1\\\end{bmatrix}\ne\boldsymbol{I},
+\boldsymbol{S}=
+\begin{bmatrix}
+1 & S_{ij} \\
+S_{ij} & 1 \\
+\end{bmatrix}
+\ne\boldsymbol{I},
 $$
 
 where $S_{ij}={\boldsymbol{S}_\text{frags}}_{i,j}$ is generally not zero. To find out the **effective** transfer integral (a.k.a. coupling) between orbital $i$ and $j$ at **orthogonal** basis, a Löwdin orthogonalization is needed, that is so transform from a generalized eigen problem $\boldsymbol{F}\boldsymbol{C}=\boldsymbol{S}\boldsymbol{C}\boldsymbol{\varepsilon}$ to a simple eigen problem $\boldsymbol{F}^\prime\boldsymbol{C}^\prime=\boldsymbol{C}^\prime\boldsymbol{\varepsilon}$. To do this, for positive-defined matrix $\boldsymbol{S}$, solving its eigenvalues and eigenvectors by diagonalization gives:
@@ -75,7 +88,11 @@ $$
 Let 
 
 $$
-\begin{bmatrix}{e_i}^\text{eff}&{J_{ij}}^\text{eff}\\{J_{ij}}^\text{eff}&{e_j}^\text{eff}\\\end{bmatrix}\equiv\boldsymbol{F}^\prime=\boldsymbol{S}^{-\frac{1}{2}}F\boldsymbol{S}^{-\frac{1}{2}}, 
+\begin{bmatrix}
+{e_i}^\text{eff} & {J_{ij}}^\text{eff} \\
+{J_{ij}}^\text{eff} & {e_j}^\text{eff} \\
+\end{bmatrix}
+\equiv\boldsymbol{F}^\prime=\boldsymbol{S}^{-\frac{1}{2}}F\boldsymbol{S}^{-\frac{1}{2}},
 $$
 
 $$
