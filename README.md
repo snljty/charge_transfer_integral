@@ -161,7 +161,7 @@ $$
 \begin{cases}
 {e_i}^{\text{eff}}=\frac{1}{2}\frac{\left(e_i+e_j\right)-2F_{ij}S_{ij}+\left(e_i-e_j\right)\sqrt{1-{S_{ij}}^2}}{{1-{S_{ij}}^2}}\\
 {e_j}^{\text{eff}}=\frac{1}{2}\frac{\left(e_i+e_j\right)-2F_{ij}S_{ij}+\left(e_j-e_i\right)\sqrt{1-{S_{ij}}^2}}{{1-{S_{ij}}^2}}\\
-{J_{12}}^{\text{eff}}=\frac{F_{ij}-\frac{1}{2}\left(e_i+e_j\right){S_{ij}}}{1-{S_{ij}}^2}
+{J_{ij}}^{\text{eff}}=\frac{F_{ij}-\frac{1}{2}\left(e_i+e_j\right){S_{ij}}}{1-{S_{ij}}^2}
 \end{cases}.
 $$
 
